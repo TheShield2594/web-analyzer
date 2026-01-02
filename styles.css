@@ -98,6 +98,12 @@ h1 {
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
 
+.option:hover {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+  background: #f1f5f9;
+}
+
 .primary {
   margin-top: 8px;
   background: #1f2937;
