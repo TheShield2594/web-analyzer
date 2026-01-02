@@ -9,6 +9,18 @@ function handleTargetFormSubmit(event) {
   const targetType = formData.get('target-type');
 
   if (!targetType) {
+    // Show error message
+    const errorMessage = document.getElementById('target-error');
+    if (errorMessage) {
+      errorMessage.hidden = false;
+    }
+
+    // Focus the first radio button for accessibility
+    const firstRadio = document.getElementById('target-app');
+    if (firstRadio) {
+      firstRadio.focus();
+    }
+
     return;
   }
 
@@ -21,13 +33,20 @@ function handleTargetFormSubmit(event) {
 
 /**
  * Handles the conditional note display based on radio selection
+ * and clears any validation errors
  */
 function handleTargetTypeChange() {
   const unsureRadio = document.getElementById('target-unsure');
   const conditionalNote = document.getElementById('unsure-note');
+  const errorMessage = document.getElementById('target-error');
 
   if (!unsureRadio || !conditionalNote) {
     return;
+  }
+
+  // Clear validation error when user selects an option
+  if (errorMessage) {
+    errorMessage.hidden = true;
   }
 
   // Show the note if "Not sure" is selected, hide otherwise
