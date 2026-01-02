@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Automated Quick Checks — Diagnostic Wizard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="quick-checks.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card" aria-labelledby="screen-title">
+        <div class="eyebrow">Screen 5 — Automated Quick Checks</div>
+        <p class="route">Route: /diagnostic/quick-checks</p>
+        <h1 id="screen-title">Running diagnostics...</h1>
+        <p class="helper-text">Please wait while we perform automated network checks.</p>
+
+        <div class="checks-container">
+          <!-- DNS Lookup Check -->
+          <div class="check-item" id="check-dns">
+            <div class="check-header">
+              <span class="check-icon" aria-label="Check status">⏳</span>
+              <span class="check-name">DNS Lookup Timing</span>
+            </div>
+            <button class="details-toggle" aria-expanded="false" aria-controls="details-dns" hidden>
+              Show details
+            </button>
+            <div class="check-details" id="details-dns" hidden>
+              <p class="detail-text"></p>
+            </div>
+          </div>
+
+          <!-- HTTP Latency Check -->
+          <div class="check-item" id="check-http">
+            <div class="check-header">
+              <span class="check-icon" aria-label="Check status">⏳</span>
+              <span class="check-name">HTTP Latency Test</span>
+            </div>
+            <button class="details-toggle" aria-expanded="false" aria-controls="details-http" hidden>
+              Show details
+            </button>
+            <div class="check-details" id="details-http" hidden>
+              <p class="detail-text"></p>
+            </div>
+          </div>
+
+          <!-- Time to First Byte Check -->
+          <div class="check-item" id="check-ttfb">
+            <div class="check-header">
+              <span class="check-icon" aria-label="Check status">⏳</span>
+              <span class="check-name">Time-to-First-Byte</span>
+            </div>
+            <button class="details-toggle" aria-expanded="false" aria-controls="details-ttfb" hidden>
+              Show details
+            </button>
+            <div class="check-details" id="details-ttfb" hidden>
+              <p class="detail-text"></p>
+            </div>
+          </div>
+
+          <!-- Throughput Check -->
+          <div class="check-item" id="check-throughput">
+            <div class="check-header">
+              <span class="check-icon" aria-label="Check status">⏳</span>
+              <span class="check-name">Basic Throughput</span>
+            </div>
+            <button class="details-toggle" aria-expanded="false" aria-controls="details-throughput" hidden>
+              Show details
+            </button>
+            <div class="check-details" id="details-throughput" hidden>
+              <p class="detail-text"></p>
+            </div>
+          </div>
+        </div>
+
+        <button class="primary" id="continue-btn" disabled>
+          Continue Analysis →
+        </button>
+      </section>
+    </main>
+  </body>
+</html>
