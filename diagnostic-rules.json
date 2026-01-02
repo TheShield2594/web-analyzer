@@ -1,0 +1,362 @@
+{
+  "hypotheses": {
+    "network": { "score": 0 },
+    "dns": { "score": 0 },
+    "disk": { "score": 0 },
+    "cpu": { "score": 0 },
+    "memory": { "score": 0 },
+    "application": { "score": 0 },
+    "vpn": { "score": 0 },
+    "bandwidth": { "score": 0 }
+  },
+  "elimination_rules": [
+    {
+      "id": "eliminate_network_local",
+      "if": {
+        "affected_users": "one",
+        "vpn_in_use": false
+      },
+      "eliminate": ["network"],
+      "explanation": "Single-user issue without VPN involvement rules out network infrastructure"
+    },
+    {
+      "id": "eliminate_disk_web_only",
+      "if": {
+        "app_specific": true,
+        "disk_latency_ms": { "<": 10 }
+      },
+      "eliminate": ["disk"],
+      "explanation": "Disk latency normal for app-specific slowness"
+    },
+    {
+      "id": "eliminate_network_healthy",
+      "if": {
+        "network_latency_ms": { "<": 50 },
+        "packet_loss_percent": 0
+      },
+      "eliminate": ["network"],
+      "explanation": "Network latency and packet loss are excellent, ruling out network issues"
+    },
+    {
+      "id": "eliminate_dns_healthy",
+      "if": {
+        "dns_latency_ms": { "<": 50 }
+      },
+      "eliminate": ["dns"],
+      "explanation": "DNS resolution times are excellent"
+    },
+    {
+      "id": "eliminate_cpu_low_usage",
+      "if": {
+        "cpu_usage_percent": { "<": 30 },
+        "load_average": { "<": 2.0 }
+      },
+      "eliminate": ["cpu"],
+      "explanation": "CPU usage and load average are well within normal ranges"
+    },
+    {
+      "id": "eliminate_memory_no_pressure",
+      "if": {
+        "memory_pressure": false,
+        "memory_usage_percent": { "<": 70 }
+      },
+      "eliminate": ["memory"],
+      "explanation": "No memory pressure or high usage detected"
+    }
+  ],
+  "rules": [
+    {
+      "id": "dns_critical_lookup",
+      "if": {
+        "dns_latency_ms": { ">": 300 }
+      },
+      "then": {
+        "dns": 60,
+        "application": 10
+      },
+      "explanation": "DNS resolution time critically high"
+    },
+    {
+      "id": "dns_slow_lookup",
+      "if": {
+        "dns_latency_ms": { ">": 200, "<=": 300 }
+      },
+      "then": {
+        "dns": 40,
+        "application": 10
+      },
+      "explanation": "DNS resolution time exceeds healthy thresholds"
+    },
+    {
+      "id": "dns_elevated_lookup",
+      "if": {
+        "dns_latency_ms": { ">": 100, "<=": 200 }
+      },
+      "then": {
+        "dns": 25
+      },
+      "explanation": "DNS resolution time is elevated but not critical"
+    },
+    {
+      "id": "network_high_latency",
+      "if": {
+        "network_latency_ms": { ">": 200 }
+      },
+      "then": {
+        "network": 45
+      },
+      "explanation": "Network latency significantly exceeds normal ranges"
+    },
+    {
+      "id": "network_elevated_latency",
+      "if": {
+        "network_latency_ms": { ">": 100, "<=": 200 }
+      },
+      "then": {
+        "network": 30
+      },
+      "explanation": "Network latency is elevated above optimal levels"
+    },
+    {
+      "id": "network_packet_loss",
+      "if": {
+        "packet_loss_percent": { ">": 1 }
+      },
+      "then": {
+        "network": 35
+      },
+      "explanation": "Packet loss detected indicates network connectivity issues"
+    },
+    {
+      "id": "network_healthy",
+      "if": {
+        "network_latency_ms": { "<": 80 },
+        "packet_loss_percent": 0
+      },
+      "then": {
+        "network": -30
+      },
+      "explanation": "Network latency and packet loss are within normal ranges"
+    },
+    {
+      "id": "disk_io_wait",
+      "if": {
+        "disk_latency_ms": { ">": 25 },
+        "cpu_usage_percent": { "<": 40 }
+      },
+      "then": {
+        "disk": 50
+      },
+      "explanation": "High disk latency with low CPU usage indicates I/O wait"
+    },
+    {
+      "id": "disk_elevated_latency",
+      "if": {
+        "disk_latency_ms": { ">": 15, "<=": 25 }
+      },
+      "then": {
+        "disk": 30
+      },
+      "explanation": "Disk I/O latency is above optimal levels"
+    },
+    {
+      "id": "cpu_saturation",
+      "if": {
+        "cpu_usage_percent": { ">": 85 }
+      },
+      "then": {
+        "cpu": 45
+      },
+      "explanation": "Sustained high CPU usage detected"
+    },
+    {
+      "id": "cpu_high_usage",
+      "if": {
+        "cpu_usage_percent": { ">": 65, "<=": 85 }
+      },
+      "then": {
+        "cpu": 30
+      },
+      "explanation": "CPU usage is elevated and may be causing slowdown"
+    },
+    {
+      "id": "cpu_high_load",
+      "if": {
+        "load_average": { ">": 4.0 }
+      },
+      "then": {
+        "cpu": 35
+      },
+      "explanation": "System load average indicates CPU contention"
+    },
+    {
+      "id": "memory_pressure",
+      "if": {
+        "memory_pressure": true
+      },
+      "then": {
+        "memory": 40
+      },
+      "explanation": "System reports memory pressure or swapping"
+    },
+    {
+      "id": "memory_high_usage",
+      "if": {
+        "memory_usage_percent": { ">": 85 }
+      },
+      "then": {
+        "memory": 35
+      },
+      "explanation": "Memory usage is critically high"
+    },
+    {
+      "id": "app_only_slow",
+      "if": {
+        "app_specific": true,
+        "affected_users": "multiple"
+      },
+      "then": {
+        "application": 30
+      },
+      "explanation": "Slowness isolated to a single application affecting multiple users"
+    },
+    {
+      "id": "app_single_user",
+      "if": {
+        "app_specific": true,
+        "affected_users": "one"
+      },
+      "then": {
+        "application": 25
+      },
+      "explanation": "Application issue affecting single user"
+    },
+    {
+      "id": "vpn_related",
+      "if": {
+        "vpn_in_use": true,
+        "network_latency_ms": { ">": 100 }
+      },
+      "then": {
+        "vpn": 35,
+        "network": 20
+      },
+      "explanation": "VPN usage with elevated latency suggests VPN overhead"
+    },
+    {
+      "id": "bandwidth_saturation",
+      "if": {
+        "throughput_mbps": { "<": 10 }
+      },
+      "then": {
+        "bandwidth": 40
+      },
+      "explanation": "Available bandwidth is below acceptable thresholds"
+    },
+    {
+      "id": "bandwidth_low",
+      "if": {
+        "throughput_mbps": { ">=": 10, "<": 25 }
+      },
+      "then": {
+        "bandwidth": 25
+      },
+      "explanation": "Available bandwidth is limited"
+    },
+    {
+      "id": "intermittent_network",
+      "if": {
+        "timing_pattern": "intermittent",
+        "network_latency_ms": { ">": 80 }
+      },
+      "then": {
+        "network": 30,
+        "application": 15
+      },
+      "explanation": "Intermittent slowness with elevated latency suggests unstable network"
+    },
+    {
+      "id": "everyone_affected",
+      "if": {
+        "affected_users": "everyone"
+      },
+      "then": {
+        "network": 25,
+        "application": 20
+      },
+      "explanation": "Issue affecting all users suggests infrastructure or application-level problem"
+    },
+    {
+      "id": "recent_change_correlation",
+      "if": {
+        "recent_change": true,
+        "timing_pattern": "recent"
+      },
+      "then": {
+        "application": 30
+      },
+      "explanation": "Slowness correlating with recent changes suggests application deployment issue"
+    },
+    {
+      "id": "ttfb_high",
+      "if": {
+        "ttfb_ms": { ">": 300 }
+      },
+      "then": {
+        "application": 35,
+        "network": 15
+      },
+      "explanation": "High time-to-first-byte indicates server processing delay"
+    }
+  ],
+  "next_steps": {
+    "dns": [
+      "Test alternative DNS servers (8.8.8.8, 1.1.1.1)",
+      "Check DNS cache configuration",
+      "Verify DNS server responsiveness",
+      "Review DNS record TTL settings"
+    ],
+    "network": [
+      "Run traceroute to identify network hops",
+      "Test connection from different network",
+      "Check for network congestion patterns",
+      "Review firewall and routing rules"
+    ],
+    "disk": [
+      "Inspect storage performance metrics",
+      "Separate logs from primary disk",
+      "Check database write amplification",
+      "Review disk I/O monitoring tools"
+    ],
+    "cpu": [
+      "Identify processes consuming CPU",
+      "Review application profiling data",
+      "Check for runaway processes",
+      "Consider horizontal scaling"
+    ],
+    "memory": [
+      "Identify memory-intensive processes",
+      "Check for memory leaks",
+      "Review swap usage patterns",
+      "Consider increasing available memory"
+    ],
+    "application": [
+      "Review application logs for errors",
+      "Check recent deployments or changes",
+      "Profile application performance",
+      "Test with reduced load"
+    ],
+    "vpn": [
+      "Test without VPN connection",
+      "Check VPN server location and load",
+      "Try alternative VPN endpoint",
+      "Review VPN configuration settings"
+    ],
+    "bandwidth": [
+      "Test during off-peak hours",
+      "Check ISP bandwidth limits",
+      "Review concurrent bandwidth usage",
+      "Consider upgrading connection"
+    ]
+  }
+}

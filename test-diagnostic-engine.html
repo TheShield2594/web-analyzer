@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnostic Engine Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f8fafc;
+    }
+
+    h1 {
+      color: #1e293b;
+      border-bottom: 3px solid #6366f1;
+      padding-bottom: 10px;
+    }
+
+    .test-case {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .test-case h3 {
+      color: #475569;
+      margin-top: 0;
+    }
+
+    .test-result {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 6px;
+      background: #f1f5f9;
+    }
+
+    .test-result.success {
+      background: #dcfce7;
+      border-left: 4px solid #22c55e;
+    }
+
+    .test-result.error {
+      background: #fee2e2;
+      border-left: 4px solid #ef4444;
+    }
+
+    .signals, .result {
+      margin: 10px 0;
+    }
+
+    .signals h4, .result h4 {
+      margin: 10px 0 5px 0;
+      color: #64748b;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 13px;
+    }
+
+    .primary-cause {
+      font-size: 18px;
+      font-weight: 600;
+      color: #6366f1;
+      margin: 10px 0;
+    }
+
+    .confidence {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 16px;
+      background: #dbeafe;
+      color: #1e40af;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .confidence.high {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .confidence.medium {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .confidence.low {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    button {
+      background: #6366f1;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background: #4f46e5;
+    }
+
+    .summary {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Diagnostic Engine Test Suite</h1>
+
+  <div id="testResults"></div>
+
+  <div class="summary" id="summary"></div>
+
+  <button onclick="runAllTests()">Run All Tests</button>
+
+  <script src="diagnostic-engine.js"></script>
+  <script>
+    // Test cases with expected outcomes
+    const testCases = [
+      {
+        name: "DNS Slow Lookup",
+        signals: {
+          affected_users: "multiple",
+          timing_pattern: "intermittent",
+          dns_latency_ms: 420,
+          network_latency_ms: 35,
+          packet_loss_percent: 0,
+          disk_latency_ms: 35,
+          cpu_usage_percent: 22,
+          load_average: 1.1,
+          memory_pressure: false,
+          app_specific: true,
+          vpn_in_use: true
+        },
+        expectedCause: "dns",
+        expectedConfidenceLevel: "High"
+      },
+      {
+        name: "Network Latency Issue",
+        signals: {
+          affected_users: "everyone",
+          timing_pattern: "always",
+          dns_latency_ms: 45,
+          network_latency_ms: 350,
+          packet_loss_percent: 2,
+          disk_latency_ms: 8,
+          cpu_usage_percent: 18,
+          load_average: 0.8,
+          memory_pressure: false,
+          app_specific: false,
+          vpn_in_use: false
+        },
+        expectedCause: "network"
+      },
+      {
+        name: "Disk I/O Bottleneck",
+        signals: {
+          affected_users: "multiple",
+          timing_pattern: "always",
+          dns_latency_ms: 25,
+          network_latency_ms: 45,
+          packet_loss_percent: 0,
+          disk_latency_ms: 85,
+          cpu_usage_percent: 22,
+          load_average: 1.5,
+          memory_pressure: false,
+          app_specific: false,
+          vpn_in_use: false
+        },
+        expectedCause: "disk"
+      },
+      {
+        name: "CPU Saturation",
+        signals: {
+          affected_users: "everyone",
+          timing_pattern: "always",
+          dns_latency_ms: 30,
+          network_latency_ms: 55,
+          packet_loss_percent: 0,
+          disk_latency_ms: 12,
+          cpu_usage_percent: 92,
+          load_average: 8.5,
+          memory_pressure: false,
+          app_specific: false,
+          vpn_in_use: false
+        },
+        expectedCause: "cpu"
+      },
+      {
+        name: "Memory Pressure",
+        signals: {
+          affected_users: "one",
+          timing_pattern: "recent",
+          dns_latency_ms: 35,
+          network_latency_ms: 60,
+          packet_loss_percent: 0,
+          disk_latency_ms: 15,
+          cpu_usage_percent: 55,
+          load_average: 2.2,
+          memory_pressure: true,
+          memory_usage_percent: 92,
+          app_specific: false,
+          vpn_in_use: false
+        },
+        expectedCause: "memory"
+      },
+      {
+        name: "VPN Overhead",
+        signals: {
+          affected_users: "one",
+          timing_pattern: "always",
+          dns_latency_ms: 55,
+          network_latency_ms: 185,
+          packet_loss_percent: 0,
+          disk_latency_ms: 10,
+          cpu_usage_percent: 25,
+          load_average: 1.0,
+          memory_pressure: false,
+          app_specific: false,
+          vpn_in_use: true
+        },
+        expectedCause: "vpn"
+      },
+      {
+        name: "Bandwidth Limitation",
+        signals: {
+          affected_users: "multiple",
+          timing_pattern: "intermittent",
+          dns_latency_ms: 40,
+          network_latency_ms: 75,
+          packet_loss_percent: 0,
+          disk_latency_ms: 12,
+          cpu_usage_percent: 30,
+          load_average: 1.2,
+          memory_pressure: false,
+          app_specific: false,
+          vpn_in_use: false,
+          throughput_mbps: 5
+        },
+        expectedCause: "bandwidth"
+      },
+      {
+        name: "Application Layer Issue",
+        signals: {
+          affected_users: "multiple",
+          timing_pattern: "recent",
+          dns_latency_ms: 35,
+          network_latency_ms: 55,
+          packet_loss_percent: 0,
+          disk_latency_ms: 10,
+          cpu_usage_percent: 28,
+          load_average: 1.1,
+          memory_pressure: false,
+          app_specific: true,
+          vpn_in_use: false,
+          recent_change: true,
+          ttfb_ms: 450
+        },
+        expectedCause: "application"
+      }
+    ];
+
+    async function loadRules() {
+      const response = await fetch('diagnostic-rules.json');
+      return await response.json();
+    }
+
+    function displayTestResult(testCase, result, success) {
+      const container = document.getElementById('testResults');
+      const testDiv = document.createElement('div');
+      testDiv.className = 'test-case';
+
+      let html = `<h3>${testCase.name}</h3>`;
+
+      // Signals
+      html += `<div class="signals">
+        <h4>Input Signals</h4>
+        <pre>${JSON.stringify(testCase.signals, null, 2)}</pre>
+      </div>`;
+
+      // Result
+      if (result) {
+        const confidenceClass = result.confidence_level.toLowerCase();
+        html += `<div class="result test-result ${success ? 'success' : 'error'}">
+          <h4>Analysis Result</h4>
+          <div class="primary-cause">
+            Primary Cause: ${result.primary_cause}
+            ${testCase.expectedCause ? (result.primary_cause === testCase.expectedCause ? '✓' : '✗ (expected: ' + testCase.expectedCause + ')') : ''}
+          </div>
+          <div>
+            Confidence: <span class="confidence ${confidenceClass}">${result.confidence_percent}% (${result.confidence_level})</span>
+          </div>
+          <div style="margin-top: 10px;">
+            <strong>Evidence:</strong>
+            <ul>
+              ${result.evidence.map(e => `<li>${e}</li>`).join('')}
+            </ul>
+          </div>
+          ${result.eliminated_causes.length > 0 ? `
+            <div>
+              <strong>Eliminated:</strong> ${result.eliminated_causes.join(', ')}
+            </div>
+          ` : ''}
+          <details style="margin-top: 10px;">
+            <summary style="cursor: pointer; font-weight: 600;">Next Steps</summary>
+            <ul>
+              ${result.next_steps.map(s => `<li>${s}</li>`).join('')}
+            </ul>
+          </details>
+          <details style="margin-top: 10px;">
+            <summary style="cursor: pointer; font-weight: 600;">Full Result</summary>
+            <pre>${JSON.stringify(result, null, 2)}</pre>
+          </details>
+        </div>`;
+      } else {
+        html += `<div class="result test-result error">
+          <strong>Error:</strong> No result returned
+        </div>`;
+      }
+
+      testDiv.innerHTML = html;
+      container.appendChild(testDiv);
+    }
+
+    async function runAllTests() {
+      const container = document.getElementById('testResults');
+      const summaryDiv = document.getElementById('summary');
+      container.innerHTML = '<p>Running tests...</p>';
+      summaryDiv.innerHTML = '';
+
+      try {
+        const rules = await loadRules();
+        const engine = new DiagnosticEngine(rules);
+
+        let passed = 0;
+        let failed = 0;
+
+        container.innerHTML = '';
+
+        for (const testCase of testCases) {
+          const result = engine.analyze(testCase.signals);
+
+          let success = true;
+          if (testCase.expectedCause && result.primary_cause !== testCase.expectedCause) {
+            success = false;
+            failed++;
+          } else {
+            passed++;
+          }
+
+          displayTestResult(testCase, result, success);
+        }
+
+        summaryDiv.innerHTML = `
+          <h2>Test Summary</h2>
+          <p><strong>Total Tests:</strong> ${testCases.length}</p>
+          <p style="color: #22c55e;"><strong>Passed:</strong> ${passed}</p>
+          <p style="color: #ef4444;"><strong>Failed:</strong> ${failed}</p>
+          <p><strong>Success Rate:</strong> ${Math.round((passed / testCases.length) * 100)}%</p>
+        `;
+
+      } catch (error) {
+        container.innerHTML = `<div class="test-result error">
+          <strong>Error loading rules or running tests:</strong>
+          <pre>${error.message}</pre>
+        </div>`;
+      }
+    }
+
+    // Auto-run tests on load
+    window.addEventListener('load', runAllTests);
+  </script>
+</body>
+</html>
