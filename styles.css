@@ -181,6 +181,10 @@ h1 {
   .option {
     transition: none;
   }
+
+  .field-input {
+    transition: none;
+  }
 }
 
 /* Quick Checks Styles */

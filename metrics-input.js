@@ -12,6 +12,20 @@
  */
 
 /**
+ * Helper function to set or delete a URL parameter based on value
+ * @param {URLSearchParams} params - The URL parameters object
+ * @param {string} key - The parameter key
+ * @param {string} value - The parameter value
+ */
+function setOrDeleteParam(params, key, value) {
+  if (value) {
+    params.set(key, value);
+  } else {
+    params.delete(key);
+  }
+}
+
+/**
  * Handles the metrics form submission
  * @param {Event} event - The form submission event
  */
@@ -26,41 +40,20 @@ function handleMetricsFormSubmit(event) {
   const diskLatency = formData.get('disk-latency')?.trim() || '';
   const memoryUsage = formData.get('memory-usage')?.trim() || '';
 
-  // Log the collected metrics (for debugging/analytics)
-  console.log('Manual Metrics collected:', {
-    cpuUsage,
-    loadAverage,
-    diskLatency,
-    memoryUsage
-  });
-
   // Navigate to the next screen with all query parameters
   const params = new URLSearchParams(window.location.search);
 
   // Add metrics to parameters only if they have values
-  if (cpuUsage) {
-    params.set('cpu_usage', cpuUsage);
-  } else {
-    params.delete('cpu_usage');
-  }
+  const metrics = [
+    { key: 'cpu_usage', value: cpuUsage },
+    { key: 'load_average', value: loadAverage },
+    { key: 'disk_latency', value: diskLatency },
+    { key: 'memory_usage', value: memoryUsage }
+  ];
 
-  if (loadAverage) {
-    params.set('load_average', loadAverage);
-  } else {
-    params.delete('load_average');
-  }
-
-  if (diskLatency) {
-    params.set('disk_latency', diskLatency);
-  } else {
-    params.delete('disk_latency');
-  }
-
-  if (memoryUsage) {
-    params.set('memory_usage', memoryUsage);
-  } else {
-    params.delete('memory_usage');
-  }
+  metrics.forEach(metric => {
+    setOrDeleteParam(params, metric.key, metric.value);
+  });
 
   // Navigate to the diagnostic results page
   // This can be updated based on your application's flow
