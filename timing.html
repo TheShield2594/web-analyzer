@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timing Pattern — Diagnostic Wizard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="timing.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card" aria-labelledby="screen-title">
+        <div class="eyebrow">Screen 3 — Timing Pattern</div>
+        <p class="route">Route: /diagnostic/timing</p>
+        <h1 id="screen-title">When does the slowness occur?</h1>
+        <form class="timing-form">
+          <fieldset class="options">
+            <legend class="sr-only">Timing pattern options</legend>
+            <label class="option" for="timing-always">
+              <input type="radio" id="timing-always" name="timing-pattern" value="always" required />
+              <span class="option-label">Always slow</span>
+            </label>
+            <label class="option" for="timing-recent">
+              <input type="radio" id="timing-recent" name="timing-pattern" value="recent" />
+              <span class="option-label">Started recently</span>
+            </label>
+            <label class="option" for="timing-intermittent">
+              <input type="radio" id="timing-intermittent" name="timing-pattern" value="intermittent" />
+              <span class="option-label">Comes and goes</span>
+            </label>
+            <label class="option" for="timing-busy">
+              <input type="radio" id="timing-busy" name="timing-pattern" value="busy" />
+              <span class="option-label">Only during busy hours</span>
+            </label>
+          </fieldset>
+          <p class="error-message" id="timing-error" role="alert" hidden>
+            Please select an option to continue.
+          </p>
+          <button class="primary" type="submit">
+            Next →
+          </button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
