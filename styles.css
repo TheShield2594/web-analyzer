@@ -350,6 +350,33 @@ h1 {
   word-wrap: break-word;
 }
 
+/* Diagnostic Info Container Styles */
+.diagnostic-info-container {
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.diagnostic-info-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.diagnostic-params-list {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.8;
+  list-style: none;
+  padding-left: 0;
+}
+
+.diagnostic-params-list li {
+  padding: 2px 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .spinner-icon {
     animation: none;

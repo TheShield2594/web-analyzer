@@ -19,7 +19,7 @@
           <p class="spinner-text">Processing diagnostic data...</p>
         </div>
 
-        <div id="pathMessage" class="path-message" style="display: none;">
+        <div id="pathMessage" class="path-message" style="display: none;" aria-live="polite" aria-atomic="true">
           <div class="message-icon">🔍</div>
           <p id="messageText" class="message-text"></p>
         </div>
@@ -33,5 +33,24 @@
   </div>
 
   <script src="branch-selection.js"></script>
+  <noscript>
+    <style>
+      .spinner { display: none !important; }
+      .noscript-message {
+        padding: 20px;
+        text-align: center;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+        color: #991b1b;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+    </style>
+    <div class="noscript-message">
+      <p><strong>JavaScript Required</strong></p>
+      <p>This diagnostic wizard requires JavaScript to function. Please enable JavaScript in your browser settings to continue.</p>
+    </div>
+  </noscript>
 </body>
 </html>

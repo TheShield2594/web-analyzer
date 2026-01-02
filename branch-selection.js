@@ -118,10 +118,11 @@ function determineDiagnosticPath(diagnosticData) {
   // Priority 3: System Resource Issues
   // Indicators: single user affected + entire system slow
   // OR: local connection with low bandwidth (local resource constraint)
+  // OR: system-level slowness (DNS/network issues already handled above)
   const systemResourceIndicators = (
     (scope === 'one' && target === 'system') ||
     (connection === 'local' && low_bandwidth) ||
-    (target === 'system' && !high_latency && !dns_issues)
+    target === 'system'
   );
 
   if (systemResourceIndicators) {
@@ -208,9 +209,18 @@ function showDebugInfo(diagnosticData, selectedPath) {
 }
 
 /**
+ * Utility function to delay execution
+ * @param {number} ms - Milliseconds to delay
+ * @returns {Promise} - Promise that resolves after the delay
+ */
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
  * Main execution
  */
-function initBranchSelection() {
+async function initBranchSelection() {
   // Get all diagnostic data from URL parameters
   const diagnosticData = getUrlParams();
 
@@ -220,15 +230,17 @@ function initBranchSelection() {
   // Show debug info if enabled
   showDebugInfo(diagnosticData, selectedPath);
 
-  // Show the path message after a brief delay (for UX)
-  setTimeout(() => {
-    showPathMessage(selectedPath);
+  // Initial processing delay for UX
+  await sleep(1000);
 
-    // Navigate to the next screen after showing the message
-    setTimeout(() => {
-      navigateToPath(selectedPath, diagnosticData);
-    }, 2000); // 2 second delay to let user read the message
-  }, 1000); // 1 second initial processing delay
+  // Show the path message
+  showPathMessage(selectedPath);
+
+  // Delay to let user read the message
+  await sleep(2000);
+
+  // Navigate to the next screen
+  navigateToPath(selectedPath, diagnosticData);
 }
 
 // Initialize when DOM is ready

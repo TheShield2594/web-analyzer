@@ -32,36 +32,9 @@
     </main>
   </div>
 
+  <script src="diagnostic-utils.js"></script>
   <script>
-    // Display diagnostic parameters for debugging
-    const params = new URLSearchParams(window.location.search);
-    const diagnosticInfo = document.getElementById('diagnosticInfo');
-
-    if (diagnosticInfo) {
-      const info = document.createElement('div');
-      info.style.cssText = 'padding: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;';
-
-      const title = document.createElement('h3');
-      title.textContent = 'Diagnostic Path: System Resources';
-      title.style.cssText = 'font-size: 14px; font-weight: 600; margin-bottom: 8px;';
-      info.appendChild(title);
-
-      const paramsList = document.createElement('ul');
-      paramsList.style.cssText = 'font-size: 13px; color: #475569; line-height: 1.8;';
-
-      const keyParams = ['diagnostic_path', 'scope', 'target', 'device', 'os', 'low_bandwidth', 'throughput_mbps'];
-      keyParams.forEach(key => {
-        const value = params.get(key);
-        if (value) {
-          const li = document.createElement('li');
-          li.textContent = `${key}: ${value}`;
-          paramsList.appendChild(li);
-        }
-      });
-
-      info.appendChild(paramsList);
-      diagnosticInfo.appendChild(info);
-    }
+    renderDiagnosticInfo('System Resources', ['diagnostic_path', 'scope', 'target', 'device', 'os', 'low_bandwidth', 'throughput_mbps']);
   </script>
 </body>
 </html>
