@@ -1,40 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Network Diagnostic - Web Performance Diagnostic</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="page">
-    <main class="card">
-      <p class="eyebrow">DIAGNOSTIC WIZARD</p>
-      <p class="route">Screen 1 → 2 → 3 → 4 → 5 → 6 → <strong>Network Path</strong></p>
-      <h1>📡 Network Diagnostic</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network Diagnostic — Diagnostic Wizard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="network-diagnostic.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card" aria-labelledby="screen-title">
+        <div class="eyebrow">Screen 7 — Targeted Follow-Up (Network)</div>
+        <p class="route">Route: /diagnostic/network</p>
+        <h1 id="screen-title">Does the issue occur when you are not on VPN?</h1>
+        <form class="network-diagnostic-form">
+          <fieldset class="options">
+            <legend class="sr-only">VPN-related issue options</legend>
+            <label class="option" for="vpn-yes">
+              <input type="radio" id="vpn-yes" name="vpn-issue" value="yes" required />
+              <span class="option-label">Yes</span>
+            </label>
+            <label class="option" for="vpn-no">
+              <input type="radio" id="vpn-no" name="vpn-issue" value="no" />
+              <span class="option-label">No</span>
+            </label>
+            <label class="option" for="vpn-na">
+              <input type="radio" id="vpn-na" name="vpn-issue" value="not_applicable" />
+              <span class="option-label">Not applicable</span>
+            </label>
+          </fieldset>
+          <p class="error-message" id="vpn-error" role="alert" hidden>
+            Please select an option to continue.
+          </p>
 
-      <p class="helper-text">
-        Based on what we've seen so far, let's check your network. We've detected high latency or connectivity issues.
-      </p>
+          <!-- Conditional follow-up question -->
+          <div id="followup-section" class="followup-section" hidden>
+            <h2 class="followup-question">Are file downloads also slow, or just apps?</h2>
+            <fieldset class="options">
+              <legend class="sr-only">Slowness scope options</legend>
+              <label class="option" for="slowness-both">
+                <input type="radio" id="slowness-both" name="slowness-scope" value="both" />
+                <span class="option-label">Both are slow</span>
+              </label>
+              <label class="option" for="slowness-downloads">
+                <input type="radio" id="slowness-downloads" name="slowness-scope" value="downloads" />
+                <span class="option-label">File downloads are slow</span>
+              </label>
+              <label class="option" for="slowness-apps">
+                <input type="radio" id="slowness-apps" name="slowness-scope" value="apps" />
+                <span class="option-label">Just apps are slow</span>
+              </label>
+            </fieldset>
+            <p class="error-message" id="slowness-error" role="alert" hidden>
+              Please answer the follow-up question to continue.
+            </p>
+          </div>
 
-      <div style="margin-top: 24px; padding: 16px; background: #f0f9ff; border-radius: 12px; border-left: 3px solid #3b82f6;">
-        <p style="font-size: 14px; color: #1e40af; font-weight: 600;">
-          🚧 This diagnostic path is under development
-        </p>
-        <p style="font-size: 14px; color: #1e40af; margin-top: 8px;">
-          Additional network diagnostic tests and recommendations will be added here.
-        </p>
-      </div>
-
-      <div id="diagnosticInfo" style="margin-top: 24px;">
-        <!-- Diagnostic parameters will be displayed here by JavaScript -->
-      </div>
+          <button class="primary" type="submit">
+            Complete Diagnostic →
+          </button>
+        </form>
+      </section>
     </main>
-  </div>
-
-  <script src="diagnostic-utils.js"></script>
-  <script>
-    renderDiagnosticInfo('Network', ['diagnostic_path', 'high_latency', 'latency_ms', 'ttfb_ms', 'scope', 'target', 'timing', 'connection']);
-  </script>
-</body>
+  </body>
 </html>
