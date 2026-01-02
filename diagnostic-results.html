@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Diagnostic Complete — Diagnostic Wizard</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="global-nav.js" defer></script>
   </head>
   <body>
     <main class="page">
@@ -29,9 +30,19 @@
           </p>
         </div>
 
-        <button class="primary" onclick="window.location.href='index.html'" style="margin-top: 16px;">
-          ← Start New Diagnostic
-        </button>
+        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <button class="primary" onclick="window.location.href='index.html'">
+            ← Start New Diagnostic
+          </button>
+          <button id="exportButton" class="secondary" onclick="exportDiagnosticSummary()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+              <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4.66669 6.66666L8.00002 10L11.3334 6.66666" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Export Summary
+          </button>
+        </div>
       </section>
     </main>
 
@@ -100,6 +111,81 @@
         });
 
         summaryContainer.appendChild(summary);
+      }
+
+      // Export diagnostic summary function
+      function exportDiagnosticSummary() {
+        const params = new URLSearchParams(window.location.search);
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+
+        // Create a structured data object
+        const diagnosticData = {
+          exportedAt: new Date().toISOString(),
+          exportedAtFormatted: new Date().toLocaleString(),
+          summary: {}
+        };
+
+        // Group parameters by category
+        const categories = {
+          'Scope & Target': ['scope', 'target'],
+          'Timing Pattern': ['timing', 'intermittent', 'recent_change'],
+          'Environment': ['device', 'os', 'connection'],
+          'Quick Checks': ['high_latency', 'low_bandwidth', 'dns_issues', 'dns_ms', 'latency_ms', 'ttfb_ms', 'throughput_mbps'],
+          'Diagnostic Path': ['diagnostic_path'],
+          'Network Diagnostic': ['vpn_issue', 'slowness_scope'],
+          'Manual Metrics': ['cpu_usage', 'load_average', 'disk_latency', 'memory_usage']
+        };
+
+        Object.entries(categories).forEach(([categoryName, keys]) => {
+          const categoryParams = {};
+          keys.forEach(key => {
+            if (params.has(key)) {
+              let value = params.get(key);
+              // Format boolean values
+              if (value === 'true') value = true;
+              if (value === 'false') value = false;
+              // Convert numeric values
+              if (!isNaN(value) && value !== '') value = parseFloat(value);
+              categoryParams[key] = value;
+            }
+          });
+
+          if (Object.keys(categoryParams).length > 0) {
+            diagnosticData.summary[categoryName] = categoryParams;
+          }
+        });
+
+        // Create JSON string with proper formatting
+        const jsonString = JSON.stringify(diagnosticData, null, 2);
+
+        // Create a blob and download link
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `diagnostic-summary-${timestamp}.json`;
+
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        // Show success feedback
+        const exportButton = document.getElementById('exportButton');
+        const originalText = exportButton.innerHTML;
+        exportButton.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+            <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Exported!
+        `;
+        exportButton.disabled = true;
+
+        setTimeout(() => {
+          exportButton.innerHTML = originalText;
+          exportButton.disabled = false;
+        }, 2000);
       }
     </script>
   </body>

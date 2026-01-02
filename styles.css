@@ -14,6 +14,80 @@
 body {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
+}
+
+/* Global Navigation */
+.global-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e3e6;
+  gap: 16px;
+}
+
+.nav-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid #e2e3e6;
+  border-radius: 8px;
+  color: #141518;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-button:hover {
+  background: #f7f7f8;
+  border-color: #d1d2d6;
+}
+
+.nav-button:active {
+  transform: scale(0.98);
+}
+
+.nav-button:focus {
+  outline: 2px solid #0066ff;
+  outline-offset: 2px;
+}
+
+.nav-button svg {
+  flex-shrink: 0;
+}
+
+.nav-restart {
+  color: #6b7280;
+}
+
+.nav-restart:hover {
+  color: #141518;
+  border-color: #141518;
+}
+
+@media (max-width: 600px) {
+  .global-nav {
+    padding: 12px 16px;
+  }
+
+  .nav-button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .nav-button span {
+    display: none;
+  }
+
+  .nav-button svg {
+    margin: 0;
+  }
 }
 
 .page {
@@ -157,6 +231,42 @@ h1 {
   outline-offset: 2px;
 }
 
+.secondary {
+  margin-top: 8px;
+  background: #ffffff;
+  color: #1f2937;
+  border: 1px solid #e2e3e6;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.secondary:hover {
+  background: #f7f7f8;
+  border-color: #d1d2d6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.secondary:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.secondary:focus {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -174,6 +284,15 @@ h1 {
   }
 
   .primary:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .secondary {
+    transition: none;
+  }
+
+  .secondary:hover {
     transform: none;
     box-shadow: none;
   }
@@ -472,6 +591,11 @@ h1 {
   }
 
   .primary {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+
+  .secondary {
     padding: 12px 16px;
     font-size: 15px;
   }
