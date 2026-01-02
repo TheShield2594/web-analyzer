@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manual Metrics — Diagnostic Wizard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="metrics-input.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card" aria-labelledby="screen-title">
+        <div class="eyebrow">Screen 8 — Manual Metrics (Optional but Powerful)</div>
+        <p class="route">Route: /diagnostic/metrics</p>
+        <h1 id="screen-title">If available, paste any relevant metrics below.</h1>
+        <p class="helper-text">Even partial data helps increase confidence.</p>
+        <form class="metrics-form">
+          <div class="form-fields">
+            <div class="form-field">
+              <label for="cpu-usage" class="field-label">CPU usage</label>
+              <textarea
+                id="cpu-usage"
+                name="cpu-usage"
+                class="field-input"
+                rows="3"
+                placeholder="e.g., 45%, 2.3 GHz, or any relevant CPU metrics"
+              ></textarea>
+            </div>
+
+            <div class="form-field">
+              <label for="load-average" class="field-label">Load average</label>
+              <textarea
+                id="load-average"
+                name="load-average"
+                class="field-input"
+                rows="3"
+                placeholder="e.g., 1.5, 2.1, 1.8 or uptime output"
+              ></textarea>
+            </div>
+
+            <div class="form-field">
+              <label for="disk-latency" class="field-label">Disk latency</label>
+              <textarea
+                id="disk-latency"
+                name="disk-latency"
+                class="field-input"
+                rows="3"
+                placeholder="e.g., 15ms avg, iostat output, or disk performance data"
+              ></textarea>
+            </div>
+
+            <div class="form-field">
+              <label for="memory-usage" class="field-label">Memory usage</label>
+              <textarea
+                id="memory-usage"
+                name="memory-usage"
+                class="field-input"
+                rows="3"
+                placeholder="e.g., 8GB/16GB, 75% used, or free -h output"
+              ></textarea>
+            </div>
+          </div>
+
+          <p class="conditional-note">
+            This is where admins feel respected, not blocked.
+          </p>
+
+          <button class="primary" type="submit">
+            Continue →
+          </button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
