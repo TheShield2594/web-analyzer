@@ -3,30 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Why Is This Slow? — Diagnostic Wizard</title>
+    <title>Impact Scope — Diagnostic Wizard</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="page">
       <section class="card" aria-labelledby="screen-title">
-        <div class="eyebrow">Diagnostic Wizard</div>
-        <h1 id="screen-title">Why Is This Slow?</h1>
-        <p class="subtitle">
-          A guided diagnostic to identify performance bottlenecks methodically.
+        <div class="eyebrow">Screen 1 — Impact Scope</div>
+        <p class="route">Route: /diagnostic/scope</p>
+        <h1 id="screen-title">Who is experiencing the slowness?</h1>
+        <p class="helper-text" id="impact-scope-helper">
+          This determines whether the issue is likely local or systemic.
         </p>
-        <p class="quiet-note">
-          This walkthrough narrows the search to the single most likely bottleneck so you can
-          act with confidence.
-        </p>
-        <button class="primary" type="button">Start Diagnostic</button>
-        <div class="secondary-links">
-          <a href="#what-this-checks" class="secondary">What this checks</a>
-          <span class="divider" aria-hidden="true">•</span>
-          <a href="#privacy" class="secondary">Privacy &amp; data handling</a>
-        </div>
+        <fieldset class="options" aria-describedby="impact-scope-helper">
+          <legend class="sr-only">Impact scope options</legend>
+          <label class="option" for="scope-one">
+            <input type="radio" id="scope-one" name="impact-scope" value="one" />
+            <span class="option-label">One user</span>
+          </label>
+          <label class="option" for="scope-multiple">
+            <input type="radio" id="scope-multiple" name="impact-scope" value="multiple" />
+            <span class="option-label">Multiple users</span>
+          </label>
+          <label class="option" for="scope-everyone">
+            <input type="radio" id="scope-everyone" name="impact-scope" value="everyone" />
+            <span class="option-label">Everyone</span>
+          </label>
+        </fieldset>
+        <button class="primary" type="button">Next →</button>
       </section>
-      <div class="anchor-target" id="what-this-checks" aria-hidden="true"></div>
-      <div class="anchor-target" id="privacy" aria-hidden="true"></div>
     </main>
   </body>
 </html>
