@@ -387,6 +387,21 @@ h1 {
   }
 }
 
+/* Follow-up Section Styles */
+.followup-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 2px solid #e2e8f0;
+}
+
+.followup-question {
+  font-size: 20px;
+  font-weight: 650;
+  color: #0f172a;
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+
 @media (max-width: 600px) {
   .card {
     padding: 24px;
@@ -432,5 +447,9 @@ h1 {
 
   .message-text {
     font-size: 16px;
+  }
+
+  .followup-question {
+    font-size: 18px;
   }
 }
