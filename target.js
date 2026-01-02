@@ -27,8 +27,10 @@ function handleTargetFormSubmit(event) {
   // Log the selected target type (for debugging/analytics)
   console.log('Target type selected:', targetType);
 
-  // Navigate to the next diagnostic screen
-  window.location.href = `/diagnostic/next?target=${encodeURIComponent(targetType)}`;
+  // Navigate to Screen 3 (Timing Pattern)
+  const params = new URLSearchParams(window.location.search);
+  params.set('target', targetType);
+  window.location.href = `timing.html?${params.toString()}`;
 }
 
 /**
