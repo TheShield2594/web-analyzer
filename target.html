@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>What Is Slow — Diagnostic Wizard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="target.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card" aria-labelledby="screen-title">
+        <div class="eyebrow">Screen 2 — What Is Slow?</div>
+        <p class="route">Route: /diagnostic/target</p>
+        <h1 id="screen-title">What feels slow?</h1>
+        <form class="target-form">
+          <fieldset class="options">
+            <legend class="sr-only">Target type options</legend>
+            <label class="option" for="target-app">
+              <input type="radio" id="target-app" name="target-type" value="application" required />
+              <span class="option-label">A specific application</span>
+            </label>
+            <label class="option" for="target-website">
+              <input type="radio" id="target-website" name="target-type" value="website" />
+              <span class="option-label">A website</span>
+            </label>
+            <label class="option" for="target-system">
+              <input type="radio" id="target-system" name="target-type" value="system" />
+              <span class="option-label">The entire system</span>
+            </label>
+            <label class="option" for="target-transfers">
+              <input type="radio" id="target-transfers" name="target-type" value="transfers" />
+              <span class="option-label">File transfers</span>
+            </label>
+            <label class="option" for="target-unsure">
+              <input type="radio" id="target-unsure" name="target-type" value="unsure" />
+              <span class="option-label">"Not sure"</span>
+            </label>
+          </fieldset>
+          <p class="error-message" id="target-error" role="alert" hidden>
+            Please select an option to continue.
+          </p>
+          <p class="conditional-note" id="unsure-note" hidden>
+            That's okay — we'll narrow it down.
+          </p>
+          <button class="primary" type="submit">
+            Next →
+          </button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
