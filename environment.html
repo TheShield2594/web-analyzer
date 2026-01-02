@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Environment Context — Diagnostic Wizard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="environment.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card" aria-labelledby="screen-title">
+        <div class="eyebrow">Screen 4 — Environment Context</div>
+        <p class="route">Route: /diagnostic/environment</p>
+        <h1 id="screen-title">Your environment</h1>
+        <p class="helper-text">Environment affects which bottlenecks are realistic.</p>
+        <form class="environment-form">
+          <fieldset class="options">
+            <legend class="option-label" style="font-size: 15px; color: #1f2937; font-weight: 600; margin-bottom: 8px;">Device type</legend>
+            <label class="option" for="device-desktop">
+              <input type="radio" id="device-desktop" name="device-type" value="desktop" required />
+              <span class="option-label">Desktop / Laptop</span>
+            </label>
+            <label class="option" for="device-server">
+              <input type="radio" id="device-server" name="device-type" value="server" />
+              <span class="option-label">Server</span>
+            </label>
+            <label class="option" for="device-vm">
+              <input type="radio" id="device-vm" name="device-type" value="vm" />
+              <span class="option-label">Virtual Machine</span>
+            </label>
+          </fieldset>
+
+          <fieldset class="options" style="margin-top: 24px;">
+            <legend class="option-label" style="font-size: 15px; color: #1f2937; font-weight: 600; margin-bottom: 8px;">Operating System</legend>
+            <label class="option" for="os-windows">
+              <input type="radio" id="os-windows" name="os" value="windows" required />
+              <span class="option-label">Windows</span>
+            </label>
+            <label class="option" for="os-macos">
+              <input type="radio" id="os-macos" name="os" value="macos" />
+              <span class="option-label">macOS</span>
+            </label>
+            <label class="option" for="os-linux">
+              <input type="radio" id="os-linux" name="os" value="linux" />
+              <span class="option-label">Linux</span>
+            </label>
+            <label class="option" for="os-other">
+              <input type="radio" id="os-other" name="os" value="other" />
+              <span class="option-label">Other</span>
+            </label>
+          </fieldset>
+
+          <fieldset class="options" style="margin-top: 24px;">
+            <legend class="option-label" style="font-size: 15px; color: #1f2937; font-weight: 600; margin-bottom: 8px;">Connection</legend>
+            <label class="option" for="connection-local">
+              <input type="radio" id="connection-local" name="connection" value="local" required />
+              <span class="option-label">Local network</span>
+            </label>
+            <label class="option" for="connection-vpn">
+              <input type="radio" id="connection-vpn" name="connection" value="vpn" />
+              <span class="option-label">VPN</span>
+            </label>
+            <label class="option" for="connection-remote">
+              <input type="radio" id="connection-remote" name="connection" value="remote" />
+              <span class="option-label">Remote / cloud</span>
+            </label>
+          </fieldset>
+
+          <p class="error-message" id="environment-error" role="alert" hidden>
+            Please select an option for all fields to continue.
+          </p>
+          <button class="primary" type="submit">
+            Next →
+          </button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
