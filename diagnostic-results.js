@@ -5,12 +5,177 @@
  * with confidence level and recommendations.
  */
 
+// Global variable to store diagnostic rules
+let diagnosticRules = null;
+
+/**
+ * Load diagnostic rules from JSON file
+ * @returns {Promise<Object>} Rules object
+ */
+async function loadDiagnosticRules() {
+  if (diagnosticRules) {
+    return diagnosticRules;
+  }
+
+  try {
+    const response = await fetch('diagnostic-rules.json');
+    diagnosticRules = await response.json();
+    return diagnosticRules;
+  } catch (error) {
+    console.error('Failed to load diagnostic rules:', error);
+    return null;
+  }
+}
+
+/**
+ * Transform URL parameters into signals for the diagnostic engine
+ * @param {URLSearchParams} params - URL parameters from diagnostic flow
+ * @returns {Object} Signals object for the diagnostic engine
+ */
+function extractSignals(params) {
+  const signals = {};
+
+  // Affected users mapping
+  const scope = params.get('scope');
+  if (scope === 'one') signals.affected_users = 'one';
+  else if (scope === 'multiple') signals.affected_users = 'multiple';
+  else if (scope === 'everyone') signals.affected_users = 'everyone';
+
+  // Timing pattern
+  signals.timing_pattern = params.get('timing') || '';
+
+  // DNS latency
+  const dnsMs = parseFloat(params.get('dns_ms'));
+  if (!isNaN(dnsMs)) signals.dns_latency_ms = dnsMs;
+
+  // Network latency
+  const latencyMs = parseFloat(params.get('latency_ms'));
+  if (!isNaN(latencyMs)) signals.network_latency_ms = latencyMs;
+
+  // Packet loss (assume 0 if not specified)
+  signals.packet_loss_percent = parseFloat(params.get('packet_loss_percent')) || 0;
+
+  // Disk latency
+  const diskLatency = parseFloat(params.get('disk_latency'));
+  if (!isNaN(diskLatency)) signals.disk_latency_ms = diskLatency;
+
+  // CPU usage
+  const cpuUsage = parseFloat(params.get('cpu_usage'));
+  if (!isNaN(cpuUsage)) signals.cpu_usage_percent = cpuUsage;
+
+  // Load average
+  const loadAvg = parseFloat(params.get('load_average'));
+  if (!isNaN(loadAvg)) signals.load_average = loadAvg;
+
+  // Memory pressure
+  signals.memory_pressure = params.get('memory_pressure') === 'true';
+
+  // Memory usage percentage
+  const memUsage = parseFloat(params.get('memory_usage'));
+  if (!isNaN(memUsage)) signals.memory_usage_percent = memUsage;
+
+  // App specific
+  const target = params.get('target');
+  signals.app_specific = target === 'app' || target === 'website';
+
+  // VPN in use
+  signals.vpn_in_use = params.get('vpn_issue') === 'yes' || params.get('vpn_issue') === 'true';
+
+  // Recent change
+  signals.recent_change = params.get('recent_change') === 'true';
+
+  // TTFB
+  const ttfbMs = parseFloat(params.get('ttfb_ms'));
+  if (!isNaN(ttfbMs)) signals.ttfb_ms = ttfbMs;
+
+  // Throughput
+  const throughputMbps = parseFloat(params.get('throughput_mbps'));
+  if (!isNaN(throughputMbps)) signals.throughput_mbps = throughputMbps;
+
+  return signals;
+}
+
+/**
+ * Map diagnostic engine result to legacy format
+ * @param {Object} engineResult - Result from diagnostic engine
+ * @returns {Object} Legacy format result
+ */
+function mapEngineResultToLegacy(engineResult) {
+  // Map cause names to bottleneck descriptions
+  const bottleneckNames = {
+    dns: 'DNS resolution delays',
+    network: 'Network latency issues',
+    disk: 'Disk I/O bottleneck',
+    cpu: 'CPU saturation',
+    memory: 'Memory pressure',
+    application: 'Application-layer issues',
+    vpn: 'VPN connection overhead',
+    bandwidth: 'Network bandwidth saturation',
+    unknown: 'Insufficient diagnostic data'
+  };
+
+  const bottleneck = bottleneckNames[engineResult.primary_cause] || engineResult.primary_cause;
+
+  // Generate explanation based on primary cause
+  const explanations = {
+    dns: 'DNS resolution happens before any network request. High DNS times indicate your system is waiting for domain name lookups to complete before it can even start connecting to the server.',
+    network: 'High network latency means packets are taking a long time to travel between your device and servers. This could be due to network congestion, routing issues, or problems with your ISP\'s infrastructure.',
+    disk: 'Disk I/O bottlenecks occur when your storage device cannot keep up with read/write demands. This is often characterized by high latency with low CPU usage, indicating the system is waiting for disk operations.',
+    cpu: 'CPU saturation means your processor is working at or near maximum capacity. This leaves little headroom for additional work and causes delays in processing requests.',
+    memory: 'Memory pressure occurs when your system is running low on available RAM and may be swapping to disk. This significantly degrades performance as disk is much slower than RAM.',
+    application: 'Application-layer issues are problems within the specific software or service, such as inefficient code, database queries, or resource contention within the application itself.',
+    vpn: 'VPNs encrypt and route your traffic through remote servers, adding extra network hops. This encryption and routing overhead increases latency, especially with distant servers or slower VPN protocols.',
+    bandwidth: 'When your network bandwidth is fully utilized, all devices and applications compete for limited capacity. This creates a bottleneck where data transfer speeds are constrained by your internet connection\'s maximum throughput.',
+    unknown: 'Without sufficient diagnostic data, it\'s difficult to pinpoint the exact bottleneck. Performance issues can stem from many sources including network, server, or application-level problems. More detailed metrics help isolate the root cause.'
+  };
+
+  return {
+    bottleneck: bottleneck,
+    confidence: engineResult.confidence_level,
+    confidencePercent: engineResult.confidence_percent,
+    evidence: engineResult.evidence,
+    nextSteps: engineResult.next_steps,
+    explanation: explanations[engineResult.primary_cause] || '',
+    recommendations: engineResult.next_steps,
+    _engineResult: engineResult // Keep original for debugging
+  };
+}
+
 /**
  * Analyzes diagnostic parameters and determines the most likely bottleneck
  * @param {URLSearchParams} params - URL parameters from diagnostic flow
  * @returns {Object} Analysis results with bottleneck, confidence, and recommendations
  */
-function analyzeBottleneck(params) {
+async function analyzeBottleneckWithEngine(params) {
+  // Try to use the rule-based engine
+  const rules = await loadDiagnosticRules();
+
+  if (rules && typeof DiagnosticEngine !== 'undefined') {
+    try {
+      const signals = extractSignals(params);
+      const engine = new DiagnosticEngine(rules);
+      const result = engine.analyze(signals);
+
+      console.log('Diagnostic Engine Result:', result);
+      console.log('Signals:', signals);
+
+      return mapEngineResultToLegacy(result);
+    } catch (error) {
+      console.error('Error running diagnostic engine:', error);
+      // Fall back to legacy analysis
+    }
+  }
+
+  // Fallback to legacy analysis if engine is not available
+  return analyzeBottleneckLegacy(params);
+}
+
+/**
+ * Legacy bottleneck analysis (original implementation)
+ * @param {URLSearchParams} params - URL parameters from diagnostic flow
+ * @returns {Object} Analysis results with bottleneck, confidence, and recommendations
+ */
+function analyzeBottleneckLegacy(params) {
   // Default result
   const result = {
     bottleneck: 'Unable to determine',
@@ -328,9 +493,9 @@ function analyzeBottleneck(params) {
 /**
  * Displays the analysis results on the page
  */
-function displayResults() {
+async function displayResults() {
   const params = new URLSearchParams(window.location.search);
-  const analysis = analyzeBottleneck(params);
+  const analysis = await analyzeBottleneckWithEngine(params);
 
   // Update bottleneck display
   const bottleneckElement = document.getElementById('bottleneckResult');
