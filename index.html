@@ -15,22 +15,27 @@
         <p class="helper-text" id="impact-scope-helper">
           This determines whether the issue is likely local or systemic.
         </p>
-        <fieldset class="options" aria-describedby="impact-scope-helper">
-          <legend class="sr-only">Impact scope options</legend>
-          <label class="option" for="scope-one">
-            <input type="radio" id="scope-one" name="impact-scope" value="one" />
-            <span class="option-label">One user</span>
-          </label>
-          <label class="option" for="scope-multiple">
-            <input type="radio" id="scope-multiple" name="impact-scope" value="multiple" />
-            <span class="option-label">Multiple users</span>
-          </label>
-          <label class="option" for="scope-everyone">
-            <input type="radio" id="scope-everyone" name="impact-scope" value="everyone" />
-            <span class="option-label">Everyone</span>
-          </label>
-        </fieldset>
-        <button class="primary" type="button">Next →</button>
+        <form class="scope-form" action="#" method="post">
+          <fieldset class="options" aria-describedby="impact-scope-helper">
+            <legend class="sr-only">Impact scope options</legend>
+            <label class="option" for="scope-one">
+              <input type="radio" id="scope-one" name="impact-scope" value="one" required />
+              <span class="option-label">One user</span>
+            </label>
+            <label class="option" for="scope-multiple">
+              <input type="radio" id="scope-multiple" name="impact-scope" value="multiple" />
+              <span class="option-label">Multiple users</span>
+            </label>
+            <label class="option" for="scope-everyone">
+              <input type="radio" id="scope-everyone" name="impact-scope" value="everyone" />
+              <span class="option-label">Everyone</span>
+            </label>
+          </fieldset>
+          <button class="primary" type="submit">
+            Next →
+          </button>
+          <!-- Placeholder until navigation is implemented. -->
+        </form>
       </section>
     </main>
   </body>
