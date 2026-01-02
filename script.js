@@ -15,11 +15,8 @@ function handleScopeFormSubmit(event) {
   // Log the selected scope (for debugging/analytics)
   console.log('Impact scope selected:', impactScope);
 
-  // TODO: Navigate to the next diagnostic screen
-  // Example: window.location.href = `/diagnostic/next?scope=${impactScope}`;
-
-  // Placeholder alert until navigation is implemented
-  alert(`Impact scope "${impactScope}" selected. Next screen navigation will be implemented here.`);
+  // Navigate to Screen 2
+  window.location.href = `target.html?scope=${impactScope}`;
 }
 
 // Initialize form handler when DOM is ready
