@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DNS Diagnostic - Web Performance Diagnostic</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <main class="card">
+      <p class="eyebrow">DIAGNOSTIC WIZARD</p>
+      <p class="route">Screen 1 → 2 → 3 → 4 → 5 → 6 → <strong>DNS Path</strong></p>
+      <h1>🌐 DNS Diagnostic</h1>
+
+      <p class="helper-text">
+        We've identified DNS resolution issues. Let's investigate your domain name system configuration and performance.
+      </p>
+
+      <div style="margin-top: 24px; padding: 16px; background: #f0f9ff; border-radius: 12px; border-left: 3px solid #3b82f6;">
+        <p style="font-size: 14px; color: #1e40af; font-weight: 600;">
+          🚧 This diagnostic path is under development
+        </p>
+        <p style="font-size: 14px; color: #1e40af; margin-top: 8px;">
+          Additional DNS diagnostic tests and recommendations will be added here.
+        </p>
+      </div>
+
+      <div id="diagnosticInfo" style="margin-top: 24px;">
+        <!-- Diagnostic parameters will be displayed here by JavaScript -->
+      </div>
+    </main>
+  </div>
+
+  <script src="diagnostic-utils.js"></script>
+  <script>
+    renderDiagnosticInfo('DNS', ['diagnostic_path', 'dns_issues', 'dns_ms', 'scope', 'target', 'timing']);
+  </script>
+</body>
+</html>

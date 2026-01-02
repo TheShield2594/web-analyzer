@@ -298,7 +298,7 @@ function handleContinue() {
     params.set('throughput_mbps', checkResults.throughput.throughput);
   }
 
-  window.location.href = `/diagnostic/next?${params.toString()}`;
+  window.location.href = `branch-selection.html?${params.toString()}`;
 }
 
 /**
