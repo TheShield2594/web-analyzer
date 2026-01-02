@@ -50,4 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   radioButtons.forEach(radio => {
     radio.addEventListener('change', handleTargetTypeChange);
   });
+
+  // Initialize conditional note visibility for any pre-selected radio
+  handleTargetTypeChange();
 });
