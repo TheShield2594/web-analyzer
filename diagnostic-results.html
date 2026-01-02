@@ -104,6 +104,150 @@
         left: 0;
         font-weight: 700;
       }
+
+      .evidence-section {
+        margin-top: 24px;
+        padding: 20px;
+        background: #fef3c7;
+        border-radius: 12px;
+        border-left: 3px solid #f59e0b;
+      }
+
+      .evidence-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #92400e;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .evidence-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .evidence-item {
+        font-size: 14px;
+        color: #78350f;
+        line-height: 1.6;
+        padding-left: 20px;
+        position: relative;
+      }
+
+      .evidence-item::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        font-weight: 700;
+        color: #f59e0b;
+      }
+
+      .next-steps-section {
+        margin-top: 24px;
+        padding: 20px;
+        background: #d1fae5;
+        border-radius: 12px;
+        border-left: 3px solid #10b981;
+      }
+
+      .next-steps-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #065f46;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .next-steps-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .next-step-item {
+        font-size: 14px;
+        color: #047857;
+        line-height: 1.6;
+        padding-left: 20px;
+        position: relative;
+      }
+
+      .next-step-item::before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+        font-weight: 700;
+      }
+
+      .teach-me-section {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #d1d5db;
+      }
+
+      .teach-me-toggle {
+        background: transparent;
+        border: none;
+        color: #6366f1;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 8px 0;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 0.2s ease;
+      }
+
+      .teach-me-toggle:hover {
+        color: #4f46e5;
+      }
+
+      .teach-me-toggle:focus-visible {
+        outline: 2px solid #6366f1;
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      .teach-me-icon {
+        transition: transform 0.2s ease;
+        display: inline-block;
+      }
+
+      .teach-me-toggle.expanded .teach-me-icon {
+        transform: rotate(90deg);
+      }
+
+      .teach-me-content {
+        display: none;
+        margin-top: 12px;
+        padding: 16px;
+        background: #f8fafc;
+        border-radius: 8px;
+        border-left: 3px solid #6366f1;
+      }
+
+      .teach-me-content.visible {
+        display: block;
+      }
+
+      .teach-me-text {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #475569;
+      }
     </style>
   </head>
   <body>
@@ -130,10 +274,43 @@
           </div>
         </div>
 
+        <!-- Evidence Section -->
+        <div class="evidence-section" id="evidenceSection" style="display: none;">
+          <div class="evidence-title">
+            📊 Evidence
+          </div>
+          <ul class="evidence-list" id="evidenceList">
+            <!-- Evidence items will be inserted here by JavaScript -->
+          </ul>
+        </div>
+
+        <!-- Next Steps Section -->
+        <div class="next-steps-section" id="nextStepsSection" style="display: none;">
+          <div class="next-steps-title">
+            🎯 Recommended Next Steps
+          </div>
+          <ul class="next-steps-list" id="nextStepsList">
+            <!-- Next steps will be inserted here by JavaScript -->
+          </ul>
+
+          <!-- Teach Me Why Toggle -->
+          <div class="teach-me-section" id="teachMeSection" style="display: none;">
+            <button class="teach-me-toggle" id="teachMeToggle" aria-expanded="false" aria-controls="teachMeContent">
+              <span class="teach-me-icon">▶</span>
+              <span>Teach me why</span>
+            </button>
+            <div class="teach-me-content" id="teachMeContent" role="region">
+              <p class="teach-me-text" id="teachMeText">
+                <!-- Explanation will be inserted here by JavaScript -->
+              </p>
+            </div>
+          </div>
+        </div>
+
         <!-- Recommendations Section -->
         <div class="recommendations-section" id="recommendationsSection" style="display: none;">
           <div class="recommendations-title">
-            💡 Recommended Actions
+            💡 Additional Recommendations
           </div>
           <ul class="recommendations-list" id="recommendationsList">
             <!-- Recommendations will be inserted here by JavaScript -->
