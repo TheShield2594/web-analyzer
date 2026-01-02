@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analyzing Results - Web Performance Diagnostic</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <main class="card">
+      <p class="eyebrow">DIAGNOSTIC WIZARD</p>
+      <p class="route">Screen 1 → 2 → 3 → 4 → 5 → <strong>6</strong></p>
+      <h1>Analyzing Results</h1>
+
+      <div class="analysis-container">
+        <div class="spinner" aria-live="polite" aria-atomic="true">
+          <div class="spinner-icon">⚙️</div>
+          <p class="spinner-text">Processing diagnostic data...</p>
+        </div>
+
+        <div id="pathMessage" class="path-message" style="display: none;">
+          <div class="message-icon">🔍</div>
+          <p id="messageText" class="message-text"></p>
+        </div>
+      </div>
+
+      <div id="debugInfo" class="debug-info" style="display: none;">
+        <h3>Debug Information</h3>
+        <pre id="debugOutput"></pre>
+      </div>
+    </main>
+  </div>
+
+  <script src="branch-selection.js"></script>
+</body>
+</html>
