@@ -55,9 +55,8 @@ function handleMetricsFormSubmit(event) {
     setOrDeleteParam(params, metric.key, metric.value);
   });
 
-  // Navigate to the diagnostic results page
-  // This can be updated based on your application's flow
-  window.location.href = `diagnostic-results.html?${params.toString()}`;
+  // Navigate to the analysis loading screen
+  window.location.href = `analyzing.html?${params.toString()}`;
 }
 
 // Initialize form handler when DOM is ready

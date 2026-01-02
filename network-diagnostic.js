@@ -127,10 +127,8 @@ function handleNetworkDiagnosticFormSubmit(event) {
     params.delete('slowness_scope');
   }
 
-  // Navigate to results/summary page
-  // For now, we'll navigate to a generic results page
-  // This can be updated based on your application's flow
-  window.location.href = `diagnostic-results.html?${params.toString()}`;
+  // Navigate to the analysis loading screen
+  window.location.href = `analyzing.html?${params.toString()}`;
 }
 
 // Initialize form handlers and radio change listeners when DOM is ready

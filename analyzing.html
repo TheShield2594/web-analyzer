@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analyzing Signals — Diagnostic Wizard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="analyzing.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card" aria-labelledby="screen-title">
+        <div class="eyebrow">Screen 9 — Analysis in Progress</div>
+        <p class="route">Route: /diagnostic/analyzing</p>
+        <h1 id="screen-title">Analyzing signals…</h1>
+
+        <div class="analysis-container">
+          <div class="spinner" aria-live="polite" aria-atomic="true">
+            <div class="spinner-icon">⚙️</div>
+            <p class="spinner-text">Processing your diagnostic data</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <noscript>
+      <style>
+        .spinner {
+          display: none !important;
+        }
+        .noscript-message {
+          padding: 20px;
+          text-align: center;
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          border-radius: 12px;
+          color: #991b1b;
+          font-size: 15px;
+          line-height: 1.6;
+        }
+      </style>
+      <div class="noscript-message">
+        <p><strong>JavaScript Required</strong></p>
+        <p>
+          This diagnostic wizard requires JavaScript to function. Please enable
+          JavaScript in your browser settings to continue.
+        </p>
+      </div>
+    </noscript>
+  </body>
+</html>
