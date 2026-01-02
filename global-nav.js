@@ -104,7 +104,11 @@
   // Export utilities for use in other scripts if needed
   window.GlobalNav = {
     restart: function() {
-      window.location.href = 'index.html';
+      // Show confirmation dialog to prevent accidental data loss
+      const confirmed = window.confirm('Are you sure you want to restart the diagnostic? All progress will be lost.');
+      if (confirmed) {
+        window.location.href = 'index.html';
+      }
     },
     back: function() {
       if (window.history.length > 1) {

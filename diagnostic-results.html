@@ -323,7 +323,7 @@
           <!-- Diagnostic summary will be displayed here by JavaScript -->
         </div>
 
-        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+        <div class="results-actions">
           <button class="primary" onclick="window.location.href='index.html'">
             ← Start New Diagnostic
           </button>
@@ -336,6 +336,9 @@
             Export Summary
           </button>
         </div>
+
+        <!-- Screen reader status announcements -->
+        <div id="exportStatus" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
       </section>
     </main>
 
@@ -343,77 +346,120 @@
     <script>
       // Export diagnostic summary function
       function exportDiagnosticSummary() {
-        const params = new URLSearchParams(window.location.search);
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+        const exportButton = document.getElementById('exportButton');
+        const exportStatus = document.getElementById('exportStatus');
+        const originalText = exportButton.innerHTML;
+        let blobUrl = null;
 
-        // Create a structured data object
-        const diagnosticData = {
-          exportedAt: new Date().toISOString(),
-          exportedAtFormatted: new Date().toLocaleString(),
-          summary: {}
-        };
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
 
-        // Group parameters by category
-        const categories = {
-          'Scope & Target': ['scope', 'target'],
-          'Timing Pattern': ['timing', 'intermittent', 'recent_change'],
-          'Environment': ['device', 'os', 'connection'],
-          'Quick Checks': ['high_latency', 'low_bandwidth', 'dns_issues', 'dns_ms', 'latency_ms', 'ttfb_ms', 'throughput_mbps'],
-          'Diagnostic Path': ['diagnostic_path'],
-          'Network Diagnostic': ['vpn_issue', 'slowness_scope'],
-          'Manual Metrics': ['cpu_usage', 'load_average', 'disk_latency', 'memory_usage']
-        };
+          // Create a structured data object
+          const diagnosticData = {
+            exportedAt: new Date().toISOString(),
+            exportedAtFormatted: new Date().toLocaleString(),
+            summary: {}
+          };
 
-        Object.entries(categories).forEach(([categoryName, keys]) => {
-          const categoryParams = {};
-          keys.forEach(key => {
-            if (params.has(key)) {
-              let value = params.get(key);
-              // Format boolean values
-              if (value === 'true') value = true;
-              if (value === 'false') value = false;
-              // Convert numeric values
-              if (!isNaN(value) && value !== '') value = parseFloat(value);
-              categoryParams[key] = value;
+          // Group parameters by category
+          const categories = {
+            'Scope & Target': ['scope', 'target'],
+            'Timing Pattern': ['timing', 'intermittent', 'recent_change'],
+            'Environment': ['device', 'os', 'connection'],
+            'Quick Checks': ['high_latency', 'low_bandwidth', 'dns_issues', 'dns_ms', 'latency_ms', 'ttfb_ms', 'throughput_mbps'],
+            'Diagnostic Path': ['diagnostic_path'],
+            'Network Diagnostic': ['vpn_issue', 'slowness_scope'],
+            'Manual Metrics': ['cpu_usage', 'load_average', 'disk_latency', 'memory_usage']
+          };
+
+          Object.entries(categories).forEach(([categoryName, keys]) => {
+            const categoryParams = {};
+            keys.forEach(key => {
+              if (params.has(key)) {
+                let value = params.get(key);
+
+                // Format boolean values first
+                if (value === 'true') {
+                  value = true;
+                } else if (value === 'false') {
+                  value = false;
+                } else {
+                  // Try numeric conversion with proper validation
+                  const trimmed = value.trim();
+                  if (trimmed !== '') {
+                    const numValue = Number(trimmed);
+                    if (!Number.isNaN(numValue)) {
+                      value = numValue;
+                    }
+                  }
+                }
+
+                categoryParams[key] = value;
+              }
+            });
+
+            if (Object.keys(categoryParams).length > 0) {
+              diagnosticData.summary[categoryName] = categoryParams;
             }
           });
 
-          if (Object.keys(categoryParams).length > 0) {
-            diagnosticData.summary[categoryName] = categoryParams;
+          // Validate that we have data to export
+          if (Object.keys(diagnosticData.summary).length === 0) {
+            alert('No diagnostic data available to export. Please complete the diagnostic first.');
+            return;
           }
-        });
 
-        // Create JSON string with proper formatting
-        const jsonString = JSON.stringify(diagnosticData, null, 2);
+          // Create JSON string with proper formatting
+          const jsonString = JSON.stringify(diagnosticData, null, 2);
 
-        // Create a blob and download link
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `diagnostic-summary-${timestamp}.json`;
+          // Create a blob and download link
+          const blob = new Blob([jsonString], { type: 'application/json' });
+          blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = `diagnostic-summary-${timestamp}.json`;
 
-        // Trigger download
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+          // Trigger download
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
 
-        // Show success feedback
-        const exportButton = document.getElementById('exportButton');
-        const originalText = exportButton.innerHTML;
-        exportButton.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
-            <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Exported!
-        `;
-        exportButton.disabled = true;
+          // Show success feedback
+          exportButton.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+              <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Exported!
+          `;
+          exportButton.disabled = true;
 
-        setTimeout(() => {
+          // Update aria-live region for screen readers
+          exportStatus.textContent = 'Export completed';
+
+          setTimeout(() => {
+            exportButton.innerHTML = originalText;
+            exportButton.disabled = false;
+            exportStatus.textContent = '';
+          }, 2000);
+
+        } catch (error) {
+          console.error('Export failed:', error);
+
+          // Show error message to user
+          alert('Failed to export diagnostic summary. Please try again.');
+
+          // Restore button state on error
           exportButton.innerHTML = originalText;
           exportButton.disabled = false;
-        }, 2000);
+          exportStatus.textContent = '';
+
+        } finally {
+          // Clean up blob URL to avoid memory leaks
+          if (blobUrl) {
+            URL.revokeObjectURL(blobUrl);
+          }
+        }
       }
     </script>
   </body>
