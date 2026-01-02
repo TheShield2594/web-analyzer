@@ -15,11 +15,8 @@ function handleTargetFormSubmit(event) {
   // Log the selected target type (for debugging/analytics)
   console.log('Target type selected:', targetType);
 
-  // TODO: Navigate to the next diagnostic screen
-  // Example: window.location.href = `/diagnostic/next?target=${targetType}`;
-
-  // Placeholder alert until navigation is implemented
-  alert(`Target type "${targetType}" selected. Next screen navigation will be implemented here.`);
+  // Navigate to the next diagnostic screen
+  window.location.href = `/diagnostic/next?target=${encodeURIComponent(targetType)}`;
 }
 
 /**

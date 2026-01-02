@@ -16,7 +16,7 @@ function handleScopeFormSubmit(event) {
   console.log('Impact scope selected:', impactScope);
 
   // Navigate to Screen 2
-  window.location.href = `target.html?scope=${impactScope}`;
+  window.location.href = `target.html?scope=${encodeURIComponent(impactScope)}`;
 }
 
 // Initialize form handler when DOM is ready
