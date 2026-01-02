@@ -36,6 +36,15 @@ function handleTimingFormSubmit(event) {
     case 'busy':
       intermittent = true;
       break;
+    case 'always':
+      // No flags set for 'always slow'
+      break;
+    default:
+      // Handle unexpected values - log warning and use safe defaults
+      console.warn('Unexpected timing pattern value:', timingPattern);
+      intermittent = false;
+      recent_change = false;
+      break;
   }
 
   // Log the selected timing pattern and logic flags (for debugging/analytics)
@@ -44,12 +53,21 @@ function handleTimingFormSubmit(event) {
 
   // Navigate to the next diagnostic screen with all query parameters
   const params = new URLSearchParams(window.location.search);
+
+  // Always set timing pattern
   params.set('timing', timingPattern);
+
+  // Explicitly set or remove flags to reflect current selection
   if (intermittent) {
     params.set('intermittent', 'true');
+  } else {
+    params.delete('intermittent');
   }
+
   if (recent_change) {
     params.set('recent_change', 'true');
+  } else {
+    params.delete('recent_change');
   }
 
   window.location.href = `/diagnostic/next?${params.toString()}`;
