@@ -3,30 +3,146 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Diagnostic Complete — Diagnostic Wizard</title>
+    <title>Results Summary — Diagnostic Wizard</title>
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      .results-card {
+        margin-top: 24px;
+        padding: 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
+      }
+
+      .results-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .bottleneck-text {
+        font-size: 24px;
+        font-weight: 700;
+        color: #ffffff;
+        line-height: 1.3;
+        margin-bottom: 16px;
+      }
+
+      .confidence-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .confidence-label {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+      }
+
+      .confidence-value {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+
+      .confidence-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .recommendations-section {
+        margin-top: 24px;
+        padding: 20px;
+        background: #f0f9ff;
+        border-radius: 12px;
+        border-left: 3px solid #3b82f6;
+      }
+
+      .recommendations-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1e40af;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .recommendations-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .recommendation-item {
+        font-size: 14px;
+        color: #1e40af;
+        line-height: 1.6;
+        padding-left: 20px;
+        position: relative;
+      }
+
+      .recommendation-item::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        font-weight: 700;
+      }
+    </style>
   </head>
   <body>
     <main class="page">
       <section class="card" aria-labelledby="screen-title">
-        <div class="eyebrow">Diagnostic Complete</div>
+        <div class="eyebrow">Screen 10 — Results Summary</div>
         <p class="route">Route: /diagnostic/results</p>
-        <h1 id="screen-title">✅ Diagnostic Complete</h1>
+        <h1 id="screen-title">Analysis Complete</h1>
         <p class="helper-text">
-          Thank you for completing the diagnostic wizard. Below is a summary of the information collected.
+          Based on your diagnostic inputs, we've identified the most likely performance bottleneck.
         </p>
 
-        <div id="diagnosticSummary" style="margin-top: 24px;">
-          <!-- Diagnostic summary will be displayed here by JavaScript -->
+        <!-- Top Card: Most Likely Bottleneck -->
+        <div class="results-card" role="region" aria-labelledby="bottleneck-label">
+          <div class="results-label" id="bottleneck-label">Most Likely Bottleneck</div>
+          <div class="bottleneck-text" id="bottleneckResult">
+            Analyzing...
+          </div>
+          <div class="confidence-section">
+            <span class="confidence-label">Confidence</span>
+            <span class="confidence-badge" id="confidenceLevel">
+              <span id="confidenceValue">—</span>
+            </span>
+          </div>
         </div>
 
-        <div style="margin-top: 24px; padding: 16px; background: #f0f9ff; border-radius: 12px; border-left: 3px solid #3b82f6;">
-          <p style="font-size: 14px; color: #1e40af; font-weight: 600;">
-            📋 Next Steps
-          </p>
-          <p style="font-size: 14px; color: #1e40af; margin-top: 8px;">
-            Based on the diagnostic information collected, recommendations and troubleshooting steps will be provided here.
-          </p>
+        <!-- Recommendations Section -->
+        <div class="recommendations-section" id="recommendationsSection" style="display: none;">
+          <div class="recommendations-title">
+            💡 Recommended Actions
+          </div>
+          <ul class="recommendations-list" id="recommendationsList">
+            <!-- Recommendations will be inserted here by JavaScript -->
+          </ul>
+        </div>
+
+        <!-- Diagnostic Data Summary (Collapsible) -->
+        <div id="diagnosticSummary" style="margin-top: 24px;">
+          <!-- Diagnostic summary will be displayed here by JavaScript -->
         </div>
 
         <button class="primary" onclick="window.location.href='index.html'" style="margin-top: 16px;">
@@ -35,72 +151,6 @@
       </section>
     </main>
 
-    <script src="diagnostic-utils.js"></script>
-    <script>
-      // Display all collected diagnostic parameters
-      const params = new URLSearchParams(window.location.search);
-      const summaryContainer = document.getElementById('diagnosticSummary');
-
-      if (summaryContainer) {
-        const summary = document.createElement('div');
-        summary.className = 'diagnostic-info-container';
-
-        const title = document.createElement('h3');
-        title.textContent = 'Diagnostic Summary';
-        title.className = 'diagnostic-info-title';
-        summary.appendChild(title);
-
-        // Group parameters by category
-        const categories = {
-          'Scope & Target': ['scope', 'target'],
-          'Timing Pattern': ['timing', 'intermittent', 'recent_change'],
-          'Environment': ['device', 'os', 'connection'],
-          'Quick Checks': ['high_latency', 'low_bandwidth', 'dns_issues', 'dns_ms', 'latency_ms', 'ttfb_ms', 'throughput_mbps'],
-          'Diagnostic Path': ['diagnostic_path'],
-          'Network Diagnostic': ['vpn_issue', 'slowness_scope']
-        };
-
-        Object.entries(categories).forEach(([categoryName, keys]) => {
-          const categoryParams = keys.filter(key => params.has(key));
-
-          if (categoryParams.length > 0) {
-            const categorySection = document.createElement('div');
-            categorySection.style.marginTop = '16px';
-
-            const categoryTitle = document.createElement('h4');
-            categoryTitle.textContent = categoryName;
-            categoryTitle.style.fontSize = '13px';
-            categoryTitle.style.fontWeight = '600';
-            categoryTitle.style.color = '#475569';
-            categoryTitle.style.marginBottom = '8px';
-            categorySection.appendChild(categoryTitle);
-
-            const paramsList = document.createElement('ul');
-            paramsList.className = 'diagnostic-params-list';
-
-            categoryParams.forEach(key => {
-              const value = params.get(key);
-              const li = document.createElement('li');
-
-              // Format the key for display
-              const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-              // Format boolean values
-              let displayValue = value;
-              if (value === 'true') displayValue = 'Yes';
-              if (value === 'false') displayValue = 'No';
-
-              li.innerHTML = `<strong>${formattedKey}:</strong> ${displayValue}`;
-              paramsList.appendChild(li);
-            });
-
-            categorySection.appendChild(paramsList);
-            summary.appendChild(categorySection);
-          }
-        });
-
-        summaryContainer.appendChild(summary);
-      }
-    </script>
+    <script src="diagnostic-results.js"></script>
   </body>
 </html>
