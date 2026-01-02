@@ -82,6 +82,27 @@ h1 {
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
 }
 
+.primary:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.primary:focus {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primary {
+    transition: none;
+  }
+
+  .primary:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
 .secondary-links {
   display: flex;
   align-items: center;
@@ -100,16 +121,43 @@ h1 {
   text-decoration: underline;
 }
 
+.secondary:focus-visible {
+  color: #6b7280;
+  text-decoration: underline;
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
 .divider {
   color: #c4c7ce;
 }
 
+.anchor-target {
+  height: 0;
+}
+
 @media (max-width: 600px) {
   .card {
-    padding: 28px;
+    padding: 24px;
+    gap: 12px;
   }
 
   h1 {
     font-size: 30px;
+  }
+
+  .subtitle,
+  .quiet-note {
+    font-size: 14px;
+  }
+
+  .primary {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+
+  .secondary-links {
+    gap: 6px;
   }
 }
